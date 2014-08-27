@@ -3,7 +3,6 @@ use opengl_graphics::{
   Texture,
   Gl
 };
-use piston::AssetStore;
 use settings;
 
 static MAX_X: f64 = settings::WINDOW_SIZE[0] as f64;
@@ -20,11 +19,11 @@ pub struct Ship {
   texture: Texture,
   accelerating: bool,
   turning: Direction,
-  bearing: f64,
+  pub bearing: f64,
   x_speed: f64,
   y_speed: f64,
-  x_position: f64,
-  y_position: f64
+  pub x_position: f64,
+  pub y_position: f64
 }
 
 impl Ship {
@@ -49,6 +48,42 @@ impl Ship {
       .trans(-(xs as f64 / 2.0), -(ys as f64 / 2.0))
       .image(&self.texture)
       .draw(gl);
+  }
+
+  pub fn update(&mut self) {
+    match self.turning {
+      Left => self.bearing -= 0.01,
+      Right => self.bearing += 0.01,
+      Straight => {},
+    }
+    self.bearing = self.bearing % Float::two_pi();
+
+    if self.accelerating {
+      self.x_speed += 0.01 * self.bearing.sin();
+      self.y_speed += 0.01 * self.bearing.cos();
+    } else {
+      if self.x_speed != 0.0 {
+        //self.x_speed *= 0.995;
+      }
+      if self.y_speed != 0.0 {
+        //self.y_speed *= 0.995;
+      }
+    }
+
+    self.x_position += self.x_speed;
+    self.y_position -= self.y_speed;
+
+    if self.x_position > MAX_X {
+      self.x_position = 0.0;
+    } else if self.x_position < 0.0 {
+      self.x_position = MAX_X
+    }
+
+    if self.y_position > MAX_Y {
+      self.y_position = 0.0;
+    } else if self.y_position < 0.0 {
+      self.y_position = MAX_Y
+    }
   }
 
   pub fn start_accelerating(&mut self) {
@@ -79,42 +114,5 @@ impl Ship {
       Right => self.turning = Straight,
       _ => {}
     }
-  }
-
-  pub fn update(&mut self) {
-    match self.turning {
-      Left => self.bearing -= 0.01,
-      Right => self.bearing += 0.01,
-      Straight => {},
-    }
-    self.bearing = self.bearing % Float::two_pi();
-
-    if self.accelerating {
-      self.x_speed += 0.01 * self.bearing.sin();
-      self.y_speed += 0.01 * self.bearing.cos();
-    } else {
-      if self.x_speed != 0.0 {
-        self.x_speed *= 0.995;
-      }
-      if self.y_speed != 0.0 {
-        self.y_speed *= 0.995;
-      }
-    }
-
-    self.x_position += self.x_speed;
-    self.y_position -= self.y_speed;
-
-    if self.x_position > MAX_X {
-      self.x_position = 0.0;
-    } else if self.x_position < 0.0 {
-      self.x_position = MAX_X
-    }
-
-    if self.y_position > MAX_Y {
-      self.y_position = 0.0;
-    } else if self.y_position < 0.0 {
-      self.y_position = MAX_Y
-    }
-    println!("{} {}", self.x_speed, self.y_speed);
   }
 }

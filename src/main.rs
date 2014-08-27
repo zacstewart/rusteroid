@@ -20,6 +20,7 @@ use piston::{
 mod settings;
 mod app;
 mod ship;
+mod plasma;
 
 fn main() {
   let mut window: GameWindowSDL2 = GameWindowSDL2::new(
