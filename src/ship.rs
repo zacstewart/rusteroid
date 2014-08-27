@@ -8,6 +8,7 @@ use settings;
 
 static MAX_X: f64 = settings::WINDOW_SIZE[0] as f64;
 static MAX_Y: f64 = settings::WINDOW_SIZE[1] as f64;
+static MAX_SPEED: f64 = 20.0;
 
 enum Direction {
   Left,
@@ -20,8 +21,8 @@ pub struct Ship {
   accelerating: bool,
   turning: Direction,
   bearing: f64,
-  x_acceleration: f64,
-  y_acceleration: f64,
+  x_speed: f64,
+  y_speed: f64,
   x_position: f64,
   y_position: f64
 }
@@ -33,8 +34,8 @@ impl Ship {
       accelerating:false,
       turning: Straight,
       bearing: 0.0,
-      x_acceleration:0.0,
-      y_acceleration:0.0,
+      x_speed:0.0,
+      y_speed:0.0,
       x_position:100.0,
       y_position:100.0
     }
@@ -89,19 +90,19 @@ impl Ship {
     self.bearing = self.bearing % Float::two_pi();
 
     if self.accelerating {
-      self.x_acceleration += 0.01 * self.bearing.sin();
-      self.y_acceleration += 0.01 * self.bearing.cos();
+      self.x_speed += 0.01 * self.bearing.sin();
+      self.y_speed += 0.01 * self.bearing.cos();
     } else {
-      if self.x_acceleration != 0.0 {
-        self.x_acceleration *= 0.99;
+      if self.x_speed != 0.0 {
+        self.x_speed *= 0.995;
       }
-      if self.y_acceleration != 0.0 {
-        self.y_acceleration *= 0.99;
+      if self.y_speed != 0.0 {
+        self.y_speed *= 0.995;
       }
     }
 
-    self.x_position += self.x_acceleration;
-    self.y_position -= self.y_acceleration;
+    self.x_position += self.x_speed;
+    self.y_position -= self.y_speed;
 
     if self.x_position > MAX_X {
       self.x_position = 0.0;
@@ -114,5 +115,6 @@ impl Ship {
     } else if self.y_position < 0.0 {
       self.y_position = MAX_Y
     }
+    println!("{} {}", self.x_speed, self.y_speed);
   }
 }
