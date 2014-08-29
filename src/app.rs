@@ -13,11 +13,13 @@ use piston::{
 };
 use ship::Ship;
 use plasma::Plasma;
+use asteroid::LargeSilicaceousAsteroid;
 
 pub struct App {
   asset_store: AssetStore,
   ship: Ship,
-  plasmas: Vec<Plasma>
+  plasmas: Vec<Plasma>,
+  asteroids: Vec<LargeSilicaceousAsteroid>
 }
 
 impl App {
@@ -26,10 +28,15 @@ impl App {
     let image = asset_store.path("ship.png").unwrap();
     let image = Texture::from_path(&image).unwrap();
     let ship = Ship::new(image);
+    let asteroids: Vec<LargeSilicaceousAsteroid> = range(0u, 3)
+      .map(|_| LargeSilicaceousAsteroid::new(&asset_store))
+      .collect();
+
     App {
       asset_store:asset_store,
       ship:ship,
-      plasmas:vec!()
+      plasmas:vec!(),
+      asteroids:asteroids
     }
   }
 
@@ -39,6 +46,10 @@ impl App {
 
     let c = Context::abs(args.width as f64, args.height as f64);
     c.rgb(0.0, 0.0, 0.0).draw(gl);
+
+    for asteroid in self.asteroids.iter() {
+      asteroid.render(c, gl);
+    }
 
     for plasma in self.plasmas.iter() {
       plasma.render(c, gl);
@@ -53,6 +64,10 @@ impl App {
 
     for &i in dead_plasmas.iter() {
       self.plasmas.remove(i);
+    }
+
+    for asteroid in self.asteroids.mut_iter() {
+      asteroid.update(args);
     }
 
     for plasma in self.plasmas.mut_iter() {
