@@ -52,8 +52,8 @@ impl Ship {
 
   pub fn update(&mut self) {
     match self.turning {
-      Left => self.bearing -= 0.01,
-      Right => self.bearing += 0.01,
+      Left => self.bearing -= 0.02,
+      Right => self.bearing += 0.02,
       Straight => {},
     }
     self.bearing = self.bearing % Float::two_pi();
