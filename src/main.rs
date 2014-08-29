@@ -21,6 +21,7 @@ mod settings;
 mod app;
 mod ship;
 mod plasma;
+mod asteroid;
 
 fn main() {
   let mut window: GameWindowSDL2 = GameWindowSDL2::new(
