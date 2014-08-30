@@ -27,7 +27,7 @@ pub struct LargeSilicaceousAsteroid {
 
 impl LargeSilicaceousAsteroid {
   pub fn new(asset_store: &AssetStore) -> LargeSilicaceousAsteroid {
-    let image = asset_store.path("asteroids/large/c40000.png").unwrap();
+    let image = asset_store.path("asteroids/silicaceous/large.png").unwrap();
     let image = Texture::from_path(&image).unwrap();
 
     let mut rng = rand::task_rng();
