@@ -7,7 +7,6 @@ use opengl_graphics::{
 use piston::input::keyboard;
 use piston::{
   AssetStore,
-  GameWindow,
   RenderArgs,
   UpdateArgs
 };
@@ -40,8 +39,7 @@ impl App {
     }
   }
 
-  pub fn render(&self, args: RenderArgs) {
-    let ref mut gl = Gl::new();
+  pub fn render(&self, args: RenderArgs, gl: &mut Gl) {
     gl.viewport(0, 0, args.width as i32, args.height as i32);
 
     let c = Context::abs(args.width as f64, args.height as f64);
@@ -58,7 +56,7 @@ impl App {
     self.ship.render(c, gl);
   }
 
-  pub fn update<W: GameWindow>(&mut self, window: &mut W, args: UpdateArgs) {
+  pub fn update(&mut self, args: UpdateArgs) {
     let dead_plasmas: Vec<uint> = self.plasmas.iter().enumerate()
       .filter(|&(_, p)| p.dead).map(|(i, _)| i).collect();
 
@@ -84,7 +82,7 @@ impl App {
     self.plasmas.push(plasma);
   }
 
-  pub fn key_press<W: GameWindow>(&mut self, window: &mut W, key: keyboard::Key) {
+  pub fn key_press(&mut self, key: keyboard::Key) {
     match key {
       keyboard::Up => self.ship.start_accelerating(),
       keyboard::Left => self.ship.start_turning_left(),
@@ -99,7 +97,7 @@ impl App {
     }
   }
 
-  pub fn key_release<W: GameWindow>(&mut self, window: &mut W, key: keyboard::Key) {
+  pub fn key_release(&mut self, key: keyboard::Key) {
     match key {
       keyboard::Up => self.ship.stop_accelerating(),
       keyboard::Left => self.ship.stop_turning_left(),

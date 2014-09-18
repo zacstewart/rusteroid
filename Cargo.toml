@@ -6,7 +6,7 @@ authors = ["Zac Stewart"]
 
 [dependencies.graphics]
 
-git = "https://github.com/pistondevelopers/rust-graphics"
+git = "https://github.com/pistondevelopers/graphics"
 
 [dependencies.piston]
 
